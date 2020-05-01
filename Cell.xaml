@@ -9,6 +9,7 @@
 
     <UserControl.Resources>
         <local:DigitToStringConverter x:Key="digitConverter"/>
+        <local:BoolToVisibilityConverter x:Key="visibilityConverter"/>
     </UserControl.Resources>
 
     <Grid>
@@ -31,36 +32,59 @@
             <Grid IsHitTestVisible="False">
             
                 <!-- Value Display -->
-                <TextBlock x:Name="ValueText" HorizontalAlignment="Center" VerticalAlignment="Center"
+                <TextBlock x:Name="ValueText"
                            Text="{Binding Digit, Converter={StaticResource digitConverter}}"
-                           FontSize="{StaticResource FontSizeDigit}"
+                           Style="{StaticResource DigitTextStyle}"
                            />
 
                 <!-- Center Marks -->
                 <TextBlock x:Name="CenterMarkText" HorizontalAlignment="Center" VerticalAlignment="Center"
-                           />
+                           Text="{Binding CenterMarks}" Visibility="{Binding CenterMarksVisible, Converter={StaticResource visibilityConverter}}"
+                           Style="{StaticResource PencilMarkStyle}"/>
 
                 <!-- Corner Marks -->
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="TopLeftMarkText" Grid.Column="0" Grid.Row="0"/>
-                    <TextBlock x:Name="TopRightMarkText" Grid.Column="2" Grid.Row="0"/>
-                    <TextBlock x:Name="BottomLeftMarkText" Grid.Column="0" Grid.Row="2"/>
-                    <TextBlock x:Name="BottomRightMarkText" Grid.Column="2" Grid.Row="2"/>
-                    <TextBlock x:Name="MiddleLeftMarkText" Grid.Column="0" Grid.Row="1"/>
-                    <TextBlock x:Name="MiddleRightMarkText" Grid.Column="2" Grid.Row="1"/>
-                    <TextBlock x:Name="TopMiddleMarkText" Grid.Column="1" Grid.Row="0"/>
-                    <TextBlock x:Name="BottomMiddleMarkText" Grid.Column="1" Grid.Row="2"/>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="1" VerticalAlignment="Center" Visibility="{Binding ShowOuterMark1, Converter={StaticResource visibilityConverter}}"
+                                   Style="{StaticResource PencilMarkStyle}"/>
+                        <TextBlock Grid.Column="1" Text="2" VerticalAlignment="Center" Visibility="{Binding ShowOuterMark2, Converter={StaticResource visibilityConverter}}"
+                                   Style="{StaticResource PencilMarkStyle}"/>
+                        <TextBlock Grid.Column="2" Text="3" VerticalAlignment="Center" Visibility="{Binding ShowOuterMark3, Converter={StaticResource visibilityConverter}}"
+                                   Style="{StaticResource PencilMarkStyle}"/>
+                        <TextBlock Grid.Column="3" Text="4" VerticalAlignment="Center" Visibility="{Binding ShowOuterMark4, Converter={StaticResource visibilityConverter}}"
+                                   Style="{StaticResource PencilMarkStyle}"/>
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="5" VerticalAlignment="Center" Visibility="{Binding ShowOuterMark5, Converter={StaticResource visibilityConverter}}"
+                                   Style="{StaticResource PencilMarkStyle}"/>
+                        <TextBlock Grid.Column="1" Text="6" VerticalAlignment="Center" Visibility="{Binding ShowOuterMark6, Converter={StaticResource visibilityConverter}}"
+                                   Style="{StaticResource PencilMarkStyle}"/>
+                        <TextBlock Grid.Column="2" Text="7" VerticalAlignment="Center" Visibility="{Binding ShowOuterMark7, Converter={StaticResource visibilityConverter}}"
+                                   Style="{StaticResource PencilMarkStyle}"/>
+                        <TextBlock Grid.Column="3" Text="8" VerticalAlignment="Center" Visibility="{Binding ShowOuterMark8, Converter={StaticResource visibilityConverter}}"
+                                   Style="{StaticResource PencilMarkStyle}"/>
+                        <TextBlock Grid.Column="4" Text="9" VerticalAlignment="Center" Visibility="{Binding ShowOuterMark9, Converter={StaticResource visibilityConverter}}"
+                                   Style="{StaticResource PencilMarkStyle}"/>
+                    </Grid>
                 </Grid>
 
             </Grid>

@@ -1,5 +1,79 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Sudoku.Resources">
-    
+                    xmlns:local="clr-namespace:Sudoku">
+
+    <Style TargetType="{x:Type ButtonBase}">
+        <Setter Property="Background" Value="Aquamarine"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Margin" Value="2"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeButtonLarge}"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ButtonBase}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="True"
+                            CornerRadius="10"
+                            Padding="6">
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   Focusable="False"
+                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="border" Value="MediumAquamarine"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ButtonBase}}">
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="Blue"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type ButtonBase}}"/>
+
+    <Style x:Key="DigitButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type ButtonBase}}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding InputMode}" Value="{x:Static local:DigitInputMode.Normal}">
+                <Setter Property="FontSize" Value="{StaticResource FontSizeButtonLarge}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding InputMode}" Value="{x:Static local:DigitInputMode.Outer}">
+                <Setter Property="FontSize" Value="{StaticResource FontSizeButtonSmall}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding InputMode}" Value="{x:Static local:DigitInputMode.Center}">
+                <Setter Property="FontSize" Value="{StaticResource FontSizeButtonSmall}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Text Block Styles -->
+    <Style x:Key="DigitTextStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="{StaticResource FontSizeDigit}"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsLockedDigit}" Value="True">
+                <Setter Property="Foreground" Value="Black"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsLockedDigit}" Value="False">
+                <Setter Property="Foreground" Value="Purple"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="PencilMarkStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="{StaticResource FontSizePencilMark}"/>
+    </Style>
+
 </ResourceDictionary>

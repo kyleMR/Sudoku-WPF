@@ -17,12 +17,19 @@ namespace Sudoku
         private int column;
         private int digit;
         private bool isHighlighted;
-        private bool isGivenDigit;
+        private bool isLockedDigit;
+
+        private HashSet<int> outerPencilMarks;
+        private SortedSet<int> centerPencilMarks;
 
         public int Digit
         {
             get => digit;
-            set => SetProperty(ref digit, value);
+            set
+            {
+                SetProperty(ref digit, value);
+                NotifyMarkDisplayChanged();
+            }
         }
 
         public bool IsHighlighted
@@ -31,10 +38,10 @@ namespace Sudoku
             set => SetProperty(ref isHighlighted, value);
         }
 
-        public bool IsGivenDigit
+        public bool IsLockedDigit
         {
-            get => isGivenDigit;
-            set => SetProperty(ref isGivenDigit, value);
+            get => isLockedDigit;
+            set => SetProperty(ref isLockedDigit, value);
         }
 
         public int Row
@@ -130,6 +137,80 @@ namespace Sudoku
             {
                 return new Thickness(LeftThickness, TopThickness, RightThickness, BottomThickness); 
             }
+        }
+
+        public bool ShowOuterMark1 => Digit == 0 && outerPencilMarks.Contains(1);
+        public bool ShowOuterMark2 => Digit == 0 && outerPencilMarks.Contains(2);
+        public bool ShowOuterMark3 => Digit == 0 && outerPencilMarks.Contains(3);
+        public bool ShowOuterMark4 => Digit == 0 && outerPencilMarks.Contains(4);
+        public bool ShowOuterMark5 => Digit == 0 && outerPencilMarks.Contains(5);
+        public bool ShowOuterMark6 => Digit == 0 && outerPencilMarks.Contains(6);
+        public bool ShowOuterMark7 => Digit == 0 && outerPencilMarks.Contains(7);
+        public bool ShowOuterMark8 => Digit == 0 && outerPencilMarks.Contains(8);
+        public bool ShowOuterMark9 => Digit == 0 && outerPencilMarks.Contains(9);
+
+        public string CenterMarks => string.Join("", centerPencilMarks);
+        public bool CenterMarksVisible => Digit == 0;
+
+        public CellViewModel()
+        {
+            outerPencilMarks = new HashSet<int>();
+            centerPencilMarks = new SortedSet<int>();
+        }
+
+        public void ToggleOuterMark(int digit)
+        {
+            if (outerPencilMarks.Contains(digit))
+            {
+                outerPencilMarks.Remove(digit);
+            }
+            else
+            {
+                outerPencilMarks.Add(digit);
+            }
+            var propertyName = $"ShowOuterMark{digit}";
+            OnPropertyChanged(propertyName);
+        }
+
+        public void ToggleCenterMark(int digit)
+        {
+            if (centerPencilMarks.Contains(digit))
+            {
+                centerPencilMarks.Remove(digit);
+            }
+            else
+            {
+                centerPencilMarks.Add(digit);
+            }
+            OnPropertyChanged(nameof(CenterMarks));
+        }
+
+        public void ClearPencilMarks()
+        {
+            var markArray = outerPencilMarks.ToArray();
+            foreach (int digit in markArray)
+            {
+                outerPencilMarks.Remove(digit);
+                var propertyName = $"ShowOuterMark{digit}";
+                OnPropertyChanged(propertyName);
+            }
+
+            centerPencilMarks.Clear();
+            OnPropertyChanged(nameof(CenterMarks));
+        }
+
+        private void NotifyMarkDisplayChanged()
+        {
+            OnPropertyChanged(nameof(ShowOuterMark1));
+            OnPropertyChanged(nameof(ShowOuterMark2));
+            OnPropertyChanged(nameof(ShowOuterMark3));
+            OnPropertyChanged(nameof(ShowOuterMark4));
+            OnPropertyChanged(nameof(ShowOuterMark5));
+            OnPropertyChanged(nameof(ShowOuterMark6));
+            OnPropertyChanged(nameof(ShowOuterMark7));
+            OnPropertyChanged(nameof(ShowOuterMark8));
+            OnPropertyChanged(nameof(ShowOuterMark9));
+            OnPropertyChanged(nameof(CenterMarksVisible));
         }
     }
 }

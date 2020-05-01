@@ -55,17 +55,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BoolToVisibilityConverter.cs" />
     <Compile Include="DigitToStringConverter.cs" />
     <Compile Include="PuzzleGrid.xaml.cs">
       <DependentUpon>PuzzleGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="PuzzleInputHandler.cs" />
+    <Compile Include="RelayCommand.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="Cell.xaml.cs">
       <DependentUpon>Cell.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\CellViewModel.cs" />
-    <Compile Include="ViewModels\IPuzzleProvider.cs" />
     <Compile Include="ViewModels\SudokuApplicationViewModel.cs" />
     <Compile Include="ViewModels\SudokuPuzzleViewModel.cs" />
     <Page Include="Cell.xaml">

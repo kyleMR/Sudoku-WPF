@@ -16,6 +16,8 @@ namespace Sudoku
 
         private List<CellViewModel> selectedCells = new List<CellViewModel>();
 
+        private CellViewModel lastSelectedCell;
+
         public SudokuPuzzleViewModel()
         {
             for (int y = 0; y < numDigits; y++)
@@ -27,7 +29,7 @@ namespace Sudoku
                         Column = x,
                         Row = y,
                         Digit = 0,
-                        IsGivenDigit = false,
+                        IsLockedDigit = false,
                     };
                     Cells.Add(cell);
                 }
@@ -39,14 +41,13 @@ namespace Sudoku
             return Cells[row * numDigits + col];
         }
 
-        public void MoveLeft()
+        public void MoveLeft(bool add = false)
         {
-            if (selectedCells.Count > 0)
+            if (lastSelectedCell != null)
             {
-                var headCell = selectedCells[selectedCells.Count - 1];
-                var newCol = modulo(headCell.Column - 1, numDigits);
-                var select = GetCell(headCell.Row, newCol);
-                SelectCell(select);
+                var newCol = modulo(lastSelectedCell.Column - 1, numDigits);
+                var select = GetCell(lastSelectedCell.Row, newCol);
+                SelectCell(select, add);
             }
             else
             {
@@ -55,14 +56,13 @@ namespace Sudoku
             }
         }
         
-        public void MoveRight()
+        public void MoveRight(bool add = false)
         {
-            if (selectedCells.Count > 0)
+            if (lastSelectedCell != null)
             {
-                var headCell = selectedCells[selectedCells.Count - 1];
-                var newCol = modulo(headCell.Column + 1, numDigits);
-                var select = GetCell(headCell.Row, newCol);
-                SelectCell(select);
+                var newCol = modulo(lastSelectedCell.Column + 1, numDigits);
+                var select = GetCell(lastSelectedCell.Row, newCol);
+                SelectCell(select, add);
             }
             else
             {
@@ -71,14 +71,13 @@ namespace Sudoku
             }
         }
 
-        public void MoveUp()
+        public void MoveUp(bool add = false)
         {
-            if (selectedCells.Count > 0)
+            if (lastSelectedCell != null)
             {
-                var headCell = selectedCells[selectedCells.Count - 1];
-                var newRow = modulo(headCell.Row - 1, numDigits);
-                var select = GetCell(newRow, headCell.Column);
-                SelectCell(select);
+                var newRow = modulo(lastSelectedCell.Row - 1, numDigits);
+                var select = GetCell(newRow, lastSelectedCell.Column);
+                SelectCell(select, add);
             }
             else
             {
@@ -87,14 +86,13 @@ namespace Sudoku
             }
         }
 
-        public void MoveDown()
+        public void MoveDown(bool add = false)
         {
-            if (selectedCells.Count > 0)
+            if (lastSelectedCell != null)
             {
-                var headCell = selectedCells[selectedCells.Count - 1];
-                var newRow = modulo(headCell.Row + 1, numDigits);
-                var select = GetCell(newRow, headCell.Column);
-                SelectCell(select);
+                var newRow = modulo(lastSelectedCell.Row + 1, numDigits);
+                var select = GetCell(newRow, lastSelectedCell.Column);
+                SelectCell(select, add);
             }
             else
             {
@@ -107,41 +105,124 @@ namespace Sudoku
         {
             foreach (var cell in selectedCells)
             {
-                if (cell.IsGivenDigit)
+                if (cell.IsLockedDigit)
                     continue;
                 cell.Digit = value;
             }
         }
 
-        public void SelectCell(CellViewModel cell, bool replace = true)
+        public void ClearCell()
         {
-            if (replace)
+            foreach (var cell in selectedCells)
             {
-                DeselectCells();
-            }
-            else
-            {
-                if (cell.IsHighlighted)
+                if (cell.IsLockedDigit)
+                    continue;
+                if (cell.Digit != 0)
                 {
-                    return;
+                    cell.Digit = 0;
+                }
+                else
+                {
+                    cell.ClearPencilMarks();
                 }
             }
-            cell.IsHighlighted = true;
-            selectedCells.Add(cell);
         }
         
-        public void SelectCell(int row, int column, bool replace = true)
+        public void ToggleOuterMark(int digit)
         {
-            SelectCell(GetCell(row, column), replace);
+            foreach (var cell in selectedCells)
+            {
+                if (cell.IsLockedDigit)
+                    continue;
+                cell.ToggleOuterMark(digit);
+            }
         }
 
-        public void DeselectCells()
+        public void ToggleCenterMark(int digit)
+        {
+            foreach (var cell in selectedCells)
+            {
+                if (cell.IsLockedDigit)
+                    continue;
+                cell.ToggleCenterMark(digit);
+            }
+        }
+
+        public void SelectCell(CellViewModel cell, bool add = false)
+        {
+            if (!add)
+            {
+                DeselectAllCells();
+            }
+
+            lastSelectedCell = cell;
+
+            if (!cell.IsHighlighted)
+            {
+                cell.IsHighlighted = true;
+                selectedCells.Add(cell);
+            }
+        }
+        
+        public void SelectCell(int row, int column, bool add = false)
+        {
+            SelectCell(GetCell(row, column), add);
+        }
+
+        public void DeselectCell(CellViewModel cell)
+        {
+            selectedCells.Remove(cell);
+            cell.IsHighlighted = false;
+            if (lastSelectedCell == cell)
+            {
+                lastSelectedCell = selectedCells.Count > 0 ? selectedCells[selectedCells.Count - 1] : null;
+            }
+        }
+
+        public void DeselectAllCells()
         {
             foreach (var cell in selectedCells)
             {
                 cell.IsHighlighted = false;
             }
             selectedCells.Clear();
+            lastSelectedCell = null;
+        }
+
+        public void ToggleCell(CellViewModel cell)
+        {
+            if (cell.IsHighlighted)
+            {
+                DeselectCell(cell);
+            }
+            else
+            {
+                SelectCell(cell, true);
+            }
+        }
+
+        public void ToggleCell(int row, int column)
+        {
+            ToggleCell(GetCell(row, column));
+        }
+
+        public void LockDigits()
+        {
+            foreach (var cell in Cells)
+            {
+                if (cell.Digit != 0)
+                {
+                    cell.IsLockedDigit = true;
+                }
+            }
+        }
+
+        public void UnlockDigits()
+        {
+            foreach (var cell in Cells)
+            {
+                cell.IsLockedDigit = false;
+            }
         }
 
         private static int modulo(int x, int m)

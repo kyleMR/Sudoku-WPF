@@ -3,11 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:Sudoku"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="960"
-        KeyDown="Puzzle_KeyDown"
-        KeyUp="Puzzle_KeyUp">
+        Title="Sudoku" Height="700" Width="960"
+        MouseDown="Window_MouseDown"
+        KeyDown="Window_KeyDown"
+        KeyUp="Window_KeyUp">
+
+    <Window.Resources>
+        <local:BoolToVisibilityConverter x:Key="visibilityConverter"/>
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -16,14 +22,13 @@
         </Grid.ColumnDefinitions>
 
         <local:PuzzleGrid x:Name="PuzzleGrid" Grid.Column="0" Width="580" Height="580"
-                          Margin="20 0 10 0"/>
+                          Margin="20 0 10 0"
+                          DataContext="{Binding Puzzle}"/>
 
         <Grid Grid.Column="1" Height="200" Width="240" Margin="10 0 20 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -32,22 +37,97 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <ToggleButton x:Name="NormalButton" Grid.Column="0" Grid.Row="0" Content="Normal"/>
-            <ToggleButton x:Name="CornerButton" Grid.Column="0" Grid.Row="1" Content="Corner"/>
-            <ToggleButton x:Name="CenterButton" Grid.Column="0" Grid.Row="2" Content="Center"/>
-            <ToggleButton x:Name="ColorButton" Grid.Column="0" Grid.Row="3" Content="Color"/>
+            <ToggleButton x:Name="NormalButton" Grid.Column="0" Grid.Row="0" Content="Normal" IsChecked="{Binding IsNormalInputMode}"/>
+            <ToggleButton x:Name="OuterButton" Grid.Column="0" Grid.Row="1" Content="Outer" IsChecked="{Binding IsOuterInputMode}"/>
+            <ToggleButton x:Name="CenterButton" Grid.Column="0" Grid.Row="2" Content="Center" IsChecked="{Binding IsCenterInputMode}"/>
+            <ToggleButton x:Name="PuzzleButton" Grid.Column="0" Grid.Row="3" Content="Puzzle" IsChecked="{Binding DisplayPuzzleOptions}"/>
 
-            <Button x:Name="DigitButton1" Grid.Column="1" Grid.Row="0" Content="1" FontSize="{StaticResource FontSizeButtonLarge}"/>
-            <Button x:Name="DigitButton2" Grid.Column="2" Grid.Row="0" Content="2" FontSize="{StaticResource FontSizeButtonLarge}"/>
-            <Button x:Name="DigitButton3" Grid.Column="3" Grid.Row="0" Content="3" FontSize="{StaticResource FontSizeButtonLarge}"/>
+            <!-- Digit Input Buttons -->
+            <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" Visibility="{Binding DisplayDigitButtons, Converter={StaticResource visibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <Button x:Name="DigitButton1" Grid.Column="0" Grid.Row="0" Content="1" Style="{StaticResource DigitButtonStyle}"
+                        Command="{Binding SetDigitCommand}" VerticalContentAlignment="{Binding TopRowDigitVertAlign}" HorizontalContentAlignment="{Binding LeftColDigitHorizAlign}">
+                    <Button.CommandParameter>
+                        <system:Int32>1</system:Int32>
+                    </Button.CommandParameter>
+                </Button>
+                <Button x:Name="DigitButton2" Grid.Column="1" Grid.Row="0" Content="2" Style="{StaticResource DigitButtonStyle}"
+                        Command="{Binding SetDigitCommand}" VerticalContentAlignment="{Binding TopRowDigitVertAlign}">
+                    <Button.CommandParameter>
+                        <system:Int32>2</system:Int32>
+                    </Button.CommandParameter>
+                </Button>
+                <Button x:Name="DigitButton3" Grid.Column="2" Grid.Row="0" Content="3" Style="{StaticResource DigitButtonStyle}"
+                        Command="{Binding SetDigitCommand}" VerticalContentAlignment="{Binding TopRowDigitVertAlign}" HorizontalContentAlignment="{Binding RightColDigitHorizAlign}">
+                    <Button.CommandParameter>
+                        <system:Int32>3</system:Int32>
+                    </Button.CommandParameter>
+                </Button>
 
-            <Button x:Name="DigitButton4" Grid.Column="1" Grid.Row="1" Content="4" FontSize="{StaticResource FontSizeButtonLarge}"/>
-            <Button x:Name="DigitButton5" Grid.Column="2" Grid.Row="1" Content="5" FontSize="{StaticResource FontSizeButtonLarge}"/>
-            <Button x:Name="DigitButton6" Grid.Column="3" Grid.Row="1" Content="6" FontSize="{StaticResource FontSizeButtonLarge}"/>
+                <Button x:Name="DigitButton4" Grid.Column="0" Grid.Row="1" Content="4" Style="{StaticResource DigitButtonStyle}"
+                        Command="{Binding SetDigitCommand}" HorizontalContentAlignment="{Binding LeftColDigitHorizAlign}">
+                    <Button.CommandParameter>
+                        <system:Int32>4</system:Int32>
+                    </Button.CommandParameter>
+                </Button>
+                <Button x:Name="DigitButton5" Grid.Column="1" Grid.Row="1" Content="5" Style="{StaticResource DigitButtonStyle}"
+                        Command="{Binding SetDigitCommand}">
+                    <Button.CommandParameter>
+                        <system:Int32>5</system:Int32>
+                    </Button.CommandParameter>
+                </Button>
+                <Button x:Name="DigitButton6" Grid.Column="2" Grid.Row="1" Content="6" Style="{StaticResource DigitButtonStyle}"
+                        Command="{Binding SetDigitCommand}" HorizontalContentAlignment="{Binding RightColDigitHorizAlign}">
+                    <Button.CommandParameter>
+                        <system:Int32>6</system:Int32>
+                    </Button.CommandParameter>
+                </Button>
 
-            <Button x:Name="DigitButton7" Grid.Column="1" Grid.Row="2" Content="7" FontSize="{StaticResource FontSizeButtonLarge}"/>
-            <Button x:Name="DigitButton8" Grid.Column="2" Grid.Row="2" Content="8" FontSize="{StaticResource FontSizeButtonLarge}"/>
-            <Button x:Name="DigitButton9" Grid.Column="3" Grid.Row="2" Content="9" FontSize="{StaticResource FontSizeButtonLarge}"/>
+                <Button x:Name="DigitButton7" Grid.Column="0" Grid.Row="2" Content="7" Style="{StaticResource DigitButtonStyle}"
+                        Command="{Binding SetDigitCommand}" VerticalContentAlignment="{Binding BottomRowDigitVertAlign}" HorizontalContentAlignment="{Binding LeftColDigitHorizAlign}">
+                    <Button.CommandParameter>
+                        <system:Int32>7</system:Int32>
+                    </Button.CommandParameter>
+                </Button>
+                <Button x:Name="DigitButton8" Grid.Column="1" Grid.Row="2" Content="8" Style="{StaticResource DigitButtonStyle}"
+                        Command="{Binding SetDigitCommand}" VerticalContentAlignment="{Binding BottomRowDigitVertAlign}">
+                    <Button.CommandParameter>
+                        <system:Int32>8</system:Int32>
+                    </Button.CommandParameter>
+                </Button>
+                <Button x:Name="DigitButton9" Grid.Column="2" Grid.Row="2" Content="9" Style="{StaticResource DigitButtonStyle}"
+                        Command="{Binding SetDigitCommand}" VerticalContentAlignment="{Binding BottomRowDigitVertAlign}" HorizontalContentAlignment="{Binding RightColDigitHorizAlign}">
+                    <Button.CommandParameter>
+                        <system:Int32>9</system:Int32>
+                    </Button.CommandParameter>
+                </Button>
+
+                <Button x:Name="DeleteButton" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Content="Delete" Command="{Binding ClearCellCommand}"/>
+            </Grid>
+
+            
+
+            <!-- Puzzle Option Buttons -->
+            <Button x:Name="LockUnlockPuzzleButton" Grid.Column="1" Grid.Row="0" Content="{Binding LockButtonText}"
+                    Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"
+                    Command="{Binding LockUnlockPuzzleCommand}"/>
+            <Button x:Name="SavePuzzleButton" Grid.Column="1" Grid.Row="1" Content="Save"
+                    Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"/>
+            <Button x:Name="LoadPuzzleButton" Grid.Column="1" Grid.Row="2" Content="Load"
+                    Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"/>
+            <Button x:Name="CheckSolutionButton" Grid.Column="1" Grid.Row="3" Content="Check"
+                    Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"/>
         </Grid>
     </Grid>
 </Window>
