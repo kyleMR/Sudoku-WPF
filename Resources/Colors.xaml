@@ -1,5 +1,24 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Sudoku.Resources">
-    
+                    xmlns:local="clr-namespace:Sudoku">
+
+    <Color x:Key="BackgroundLight">#FFFFFF</Color>
+    <Color x:Key="BackgroundDark">#0D70BD</Color>
+    <Color x:Key="BackgroundVeryDark">#002A68</Color>
+    <Color x:Key="BackgroundHighlight">#40B6FF</Color>
+
+    <Color x:Key="ForegroundLight">#F8F8F8</Color>
+    <Color x:Key="ForegroundDark">#2E2E2E</Color>
+    <Color x:Key="ForegroundVeryDark">#000000</Color>
+    <Color x:Key="ForegroundAccent">#00359E</Color>
+
+    <SolidColorBrush x:Key="BackgroundLightBrush" Color="{StaticResource BackgroundLight}"/>
+    <SolidColorBrush x:Key="BackgroundDarkBrush" Color="{StaticResource BackgroundDark}"/>
+    <SolidColorBrush x:Key="BackgroundVeryDarkBrush" Color="{StaticResource BackgroundVeryDark}"/>
+    <SolidColorBrush x:Key="BackgroundHighlightBrush" Color="{StaticResource BackgroundHighlight}"/>
+
+    <SolidColorBrush x:Key="ForegroundLightBrush" Color="{StaticResource ForegroundLight}"/>
+    <SolidColorBrush x:Key="ForegroundDarkBrush" Color="{StaticResource ForegroundDark}"/>
+    <SolidColorBrush x:Key="ForegroundVeryDarkBrush" Color="{StaticResource ForegroundVeryDark}"/>
+    <SolidColorBrush x:Key="ForegroundAccentBrush" Color="{StaticResource ForegroundAccent}"/>
 </ResourceDictionary>

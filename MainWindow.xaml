@@ -116,8 +116,6 @@
                 <Button x:Name="DeleteButton" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Content="Delete" Command="{Binding ClearCellCommand}"/>
             </Grid>
 
-            
-
             <!-- Puzzle Option Buttons -->
             <Button x:Name="LockUnlockPuzzleButton" Grid.Column="1" Grid.Row="0" Content="{Binding LockButtonText}"
                     Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"
@@ -127,7 +125,8 @@
             <Button x:Name="LoadPuzzleButton" Grid.Column="1" Grid.Row="2" Content="Load"
                     Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"/>
             <Button x:Name="CheckSolutionButton" Grid.Column="1" Grid.Row="3" Content="Check"
-                    Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"/>
+                    Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"
+                    Command="{Binding CheckSolutionCommand}"/>
         </Grid>
     </Grid>
 </Window>

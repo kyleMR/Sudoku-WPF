@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -128,6 +129,7 @@ namespace Sudoku
             SetDigitCommand = new RelayCommand<int>((digit) => InputDigit(digit));
             ClearCellCommand = new RelayCommand(() => Puzzle.ClearCell());
             LockUnlockPuzzleCommand = new RelayCommand(() => LockUnlockDigits());
+            CheckSolutionCommand = new RelayCommand(() => CheckSolution());
         }
 
         public void InputDigit(int digit)
@@ -157,6 +159,23 @@ namespace Sudoku
                 Puzzle.LockDigits();
             }
             PuzzleIsLocked = !PuzzleIsLocked;
+        }
+
+        private void CheckSolution()
+        {
+            var result = Puzzle.CheckSolution();
+            switch (result)
+            {
+                case SolutionState.Correct:
+                    Debug.WriteLine("Correct!");
+                    break;
+                case SolutionState.Incomplete:
+                    Debug.WriteLine("Missing some digits!");
+                    break;
+                case SolutionState.Incorrect:
+                    Debug.WriteLine("Something's not quite right.");
+                    break;
+            }
         }
     }
 }

@@ -3,8 +3,8 @@
                     xmlns:local="clr-namespace:Sudoku">
 
     <Style TargetType="{x:Type ButtonBase}">
-        <Setter Property="Background" Value="Aquamarine"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource BackgroundDarkBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundLightBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Margin" Value="2"/>
         <Setter Property="FontSize" Value="{StaticResource FontSizeButtonLarge}"/>
@@ -25,7 +25,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" TargetName="border" Value="MediumAquamarine"/>
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource BackgroundHighlightBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -36,7 +36,7 @@
     <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ButtonBase}}">
         <Style.Triggers>
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background" Value="Blue"/>
+                <Setter Property="Background" Value="{StaticResource BackgroundVeryDarkBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -60,20 +60,24 @@
     <!-- Text Block Styles -->
     <Style x:Key="DigitTextStyle" TargetType="{x:Type TextBlock}">
         <Setter Property="FontSize" Value="{StaticResource FontSizeDigit}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsLockedDigit}" Value="True">
-                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Foreground" Value="{StaticResource ForegroundVeryDarkBrush}"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding IsLockedDigit}" Value="False">
-                <Setter Property="Foreground" Value="Purple"/>
+                <Setter Property="Foreground" Value="{StaticResource ForegroundAccentBrush}"/>
             </DataTrigger>
         </Style.Triggers>
     </Style>
 
     <Style x:Key="PencilMarkStyle" TargetType="{x:Type TextBlock}">
         <Setter Property="FontSize" Value="{StaticResource FontSizePencilMark}"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundDarkBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
 
 </ResourceDictionary>

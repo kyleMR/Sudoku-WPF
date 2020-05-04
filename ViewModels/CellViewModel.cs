@@ -10,8 +10,8 @@ namespace Sudoku
     public class CellViewModel : BaseViewModel
     {
 
-        private const double OuterBorder = 6.0;
-        private const double NonetBorder = 4.0;
+        private const double OuterBorder = 8.0;
+        private const double NonetBorder = 5.0;
         private const double CellBorder = 1.5;
         private int row;
         private int column;

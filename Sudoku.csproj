@@ -55,8 +55,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BoolToVisibilityConverter.cs" />
-    <Compile Include="DigitToStringConverter.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\DigitToStringConverter.cs" />
     <Compile Include="PuzzleGrid.xaml.cs">
       <DependentUpon>PuzzleGrid.xaml</DependentUpon>
     </Compile>

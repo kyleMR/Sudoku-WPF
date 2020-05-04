@@ -8,6 +8,13 @@ using System.Threading.Tasks;
 
 namespace Sudoku
 {
+    public enum SolutionState
+    {
+        Correct,
+        Incorrect,
+        Incomplete,
+    }
+
     public class SudokuPuzzleViewModel : BaseViewModel
     {
         private const int numDigits = 9;
@@ -223,6 +230,60 @@ namespace Sudoku
             {
                 cell.IsLockedDigit = false;
             }
+        }
+
+        public SolutionState CheckSolution()
+        {
+            foreach (var cell in Cells)
+            {
+                if (cell.Digit == 0)
+                {
+                    return SolutionState.Incomplete;
+                }
+
+                // Check other cells in the same row
+                for (int col = 0; col < numDigits; col++)
+                {
+                    if (col == cell.Column) continue;
+                    var otherCell = GetCell(cell.Row, col);
+                    if (otherCell.Digit == cell.Digit)
+                    {
+                        return SolutionState.Incorrect;
+                    }
+                }
+
+                // Check other cells in the same column
+                for (int row = 0; row < numDigits; row++)
+                {
+                    if (row == cell.Row) continue;
+                    var otherCell = GetCell(row, cell.Column);
+                    if (otherCell.Digit == cell.Digit)
+                    {
+                        return SolutionState.Incorrect;
+                    }
+                }
+
+                // Check the other cells in the same nonet
+                int nonetRow = cell.Row / 3;
+                int nonetCol = cell.Column / 3;
+                for (int row = 0; row < 3; row++)
+                {
+                    for (int col = 0; col < 3; col++)
+                    {
+                        int realRow = nonetRow * 3 + row;
+                        int realCol = nonetCol * 3 + col;
+                        if (cell.Row == realRow && cell.Column == realCol) continue;
+                        var otherCell = GetCell(realRow, realCol);
+                        if (otherCell.Digit == cell.Digit)
+                        {
+                            return SolutionState.Incorrect;
+                        }
+                    }
+                }
+            }
+
+            // If none of the checks failed for any cell, the puzzle is correct
+            return SolutionState.Correct;
         }
 
         private static int modulo(int x, int m)
