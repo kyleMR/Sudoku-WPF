@@ -21,6 +21,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <!-- Puzzle -->
         <local:PuzzleGrid x:Name="PuzzleGrid" Grid.Column="0" Width="580" Height="580"
                           Margin="20 0 10 0"
                           DataContext="{Binding Puzzle}"/>
@@ -37,6 +38,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
+            <!-- Input mode toggles -->
             <ToggleButton x:Name="NormalButton" Grid.Column="0" Grid.Row="0" Content="Normal" IsChecked="{Binding IsNormalInputMode}"/>
             <ToggleButton x:Name="OuterButton" Grid.Column="0" Grid.Row="1" Content="Outer" IsChecked="{Binding IsOuterInputMode}"/>
             <ToggleButton x:Name="CenterButton" Grid.Column="0" Grid.Row="2" Content="Center" IsChecked="{Binding IsCenterInputMode}"/>
@@ -121,9 +123,11 @@
                     Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"
                     Command="{Binding LockUnlockPuzzleCommand}"/>
             <Button x:Name="SavePuzzleButton" Grid.Column="1" Grid.Row="1" Content="Save"
-                    Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"/>
+                    Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"
+                    Command="{Binding SavePuzzleCommand}"/>
             <Button x:Name="LoadPuzzleButton" Grid.Column="1" Grid.Row="2" Content="Load"
-                    Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"/>
+                    Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"
+                    Command="{Binding LoadPuzzleCommand}"/>
             <Button x:Name="CheckSolutionButton" Grid.Column="1" Grid.Row="3" Content="Check"
                     Visibility="{Binding DisplayPuzzleOptions, Converter={StaticResource visibilityConverter}}"
                     Command="{Binding CheckSolutionCommand}"/>

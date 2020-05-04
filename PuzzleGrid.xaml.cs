@@ -1,18 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Sudoku
 {
@@ -21,6 +9,7 @@ namespace Sudoku
     /// </summary>
     public partial class PuzzleGrid : UserControl
     {
+        // Private state for mouse interaction
         private int mouseRow;
         private int mouseColumn;
         private bool mouseDown;
@@ -33,11 +22,17 @@ namespace Sudoku
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Handle left mouse button clicks
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Puzzle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var puzzle = (PuzzleGrid)sender;
             if (e.ChangedButton == MouseButton.Left)
             {
+                // Determine which cell the mouse is over by finding the mouse's relative position to the puzzle in rows and columns
                 puzzle.CaptureMouse();
                 var pos = e.GetPosition(puzzle);
                 int column = (int)((pos.X / puzzle.ActualWidth) * 9);
@@ -58,10 +53,16 @@ namespace Sudoku
             }
         }
 
+        /// <summary>
+        /// Handle mouse dragging when the left button is down
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Puzzle_MouseMove(object sender, MouseEventArgs e)
         {
             if (!mouseDown) return;
 
+            // Determine which cell the mouse is over by finding the mouse's relative position to the puzzle in rows and columns
             var puzzle = (PuzzleGrid)sender;
             var pos = e.GetPosition(puzzle);
             int column = (int)((pos.X / puzzle.ActualWidth) * 9);
@@ -83,6 +84,11 @@ namespace Sudoku
             }
         }
 
+        /// <summary>
+        /// Handle release of the left mouse button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Puzzle_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -94,11 +100,19 @@ namespace Sudoku
             }
         }
 
+        /// <summary>
+        /// Helper to determine whether to add to the current selection
+        /// </summary>
+        /// <returns></returns>
         private bool IsAddSelectHotkeyDown()
         {
             return (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift));
         }
 
+        /// <summary>
+        /// Helper to determine whether to toggle with the current selection
+        /// </summary>
+        /// <returns></returns>
         private bool IsToggleSelectHotkeyDown()
         {
             return (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl));

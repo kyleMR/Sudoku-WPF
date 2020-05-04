@@ -1,18 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Sudoku
 {
@@ -21,23 +8,39 @@ namespace Sudoku
     /// </summary>
     public partial class MainWindow : Window
     {
+        // Modifier key states for changing mouse input behavior
         private bool shiftHeld;
         private bool ctrlHeld;
 
+        /// <summary>
+        /// Main application viewmodel
+        /// </summary>
         private SudokuApplicationViewModel AppViewModel { get; }
 
+        /// <summary>
+        /// Application puzzle viewmodel
+        /// </summary>
         private SudokuPuzzleViewModel Puzzle => AppViewModel.Puzzle;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
             DataContext = AppViewModel = new SudokuApplicationViewModel();
         }
 
+        /// <summary>
+        /// Keyboard input handling
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             switch(e.Key)
             {
+                // Handle arrow key movement input
                 case Key.Left:
                     Puzzle.MoveLeft(shiftHeld || ctrlHeld);
                     break;
@@ -51,6 +54,7 @@ namespace Sudoku
                     Puzzle.MoveDown(shiftHeld || ctrlHeld);
                     break;
 
+                //  Handle numeric inputs
                 case Key.NumPad1:
                 case Key.D1:
                     AppViewModel.InputDigit(1);
@@ -88,11 +92,13 @@ namespace Sudoku
                     AppViewModel.InputDigit(9);
                     break;
 
+                // Delete handling
                 case Key.Delete:
                 case Key.Back:
                     Puzzle.ClearCell();
                     break;
 
+                // Shift and ctrl modifier handling
                 case Key.LeftCtrl:
                 case Key.RightCtrl:
                     ctrlHeld = true;
@@ -110,6 +116,11 @@ namespace Sudoku
             }
         }
 
+        /// <summary>
+        /// Keyboard input handling, specifically for releasing keyboard modifiers
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
             switch (e.Key)
@@ -145,8 +156,14 @@ namespace Sudoku
             }
         }
 
+        /// <summary>
+        /// Mouse input handling. Only called if a mouse click wasn't handled by the puzzle or various buttons
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            // If the user clicks in open space in the app, clear the puzzle selection
             if (e.ChangedButton == MouseButton.Left)
             {
                 Puzzle.DeselectAllCells();

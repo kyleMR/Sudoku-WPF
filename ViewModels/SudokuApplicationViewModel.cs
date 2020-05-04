@@ -1,27 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.Win32;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
 namespace Sudoku
 {
+    /// <summary>
+    /// Digit input types
+    /// </summary>
     public enum DigitInputMode
     {
+        // Main digit input
         Normal,
+        // Outer edge pencil marks
         Outer,
+        // Cell center pencil marks
         Center,
     }
 
+    /// <summary>
+    /// Main application viewmodel
+    /// </summary>
     public class SudokuApplicationViewModel : BaseViewModel
     {
         private DigitInputMode inputMode;
         private bool displayPuzzleOptions;
         private bool puzzleIsLocked;
 
+        /// <summary>
+        /// This application's sudoku puzzle viewmodel
+        /// </summary>
         public SudokuPuzzleViewModel Puzzle { get; }
 
         public ICommand SetDigitCommand { get; }
@@ -31,6 +40,9 @@ namespace Sudoku
         public ICommand LoadPuzzleCommand { get; }
         public ICommand CheckSolutionCommand { get; }
 
+        /// <summary>
+        /// Active digit input mode
+        /// </summary>
         public DigitInputMode InputMode
         {
             get => inputMode;
@@ -86,6 +98,9 @@ namespace Sudoku
 
         public bool DisplayDigitButtons => !DisplayPuzzleOptions;
 
+        /// <summary>
+        /// Lock state of the puzzle digits
+        /// </summary>
         public bool PuzzleIsLocked
         {
             get => puzzleIsLocked;
@@ -101,6 +116,7 @@ namespace Sudoku
             get => PuzzleIsLocked ? "Unlock" : "Lock";
         }
 
+        /// Various alignment properties for digit input buttons while the 'Outer' digit input mode is active
         public VerticalAlignment TopRowDigitVertAlign
         {
             get => InputMode == DigitInputMode.Outer ? VerticalAlignment.Top : VerticalAlignment.Center;
@@ -121,6 +137,9 @@ namespace Sudoku
             get => InputMode == DigitInputMode.Outer ? HorizontalAlignment.Right : HorizontalAlignment.Center;
         }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public SudokuApplicationViewModel()
         {
             Puzzle = new SudokuPuzzleViewModel();
@@ -128,10 +147,16 @@ namespace Sudoku
 
             SetDigitCommand = new RelayCommand<int>((digit) => InputDigit(digit));
             ClearCellCommand = new RelayCommand(() => Puzzle.ClearCell());
-            LockUnlockPuzzleCommand = new RelayCommand(() => LockUnlockDigits());
-            CheckSolutionCommand = new RelayCommand(() => CheckSolution());
+            LockUnlockPuzzleCommand = new RelayCommand(LockUnlockDigits);
+            CheckSolutionCommand = new RelayCommand(async () => await CheckSolution());
+            LoadPuzzleCommand = new RelayCommand(LoadPuzzle);
+            SavePuzzleCommand = new RelayCommand(SavePuzzle);
         }
 
+        /// <summary>
+        /// Input the given digit into the selected puzzle cells based on the current input mode
+        /// </summary>
+        /// <param name="digit">Digit to input</param>
         public void InputDigit(int digit)
         {
             if (InputMode == DigitInputMode.Normal)
@@ -148,6 +173,9 @@ namespace Sudoku
             }
         }
 
+        /// <summary>
+        /// Toggle the lock/unlock state of puzzle digits
+        /// </summary>
         private void LockUnlockDigits()
         {
             if (PuzzleIsLocked)
@@ -161,20 +189,70 @@ namespace Sudoku
             PuzzleIsLocked = !PuzzleIsLocked;
         }
 
-        private void CheckSolution()
+        /// <summary>
+        /// Check whether the current state of the puzzle is solved, incorrect, or incomplete
+        /// </summary>
+        /// <returns></returns>
+        private async Task CheckSolution()
         {
-            var result = Puzzle.CheckSolution();
+            var result = await Puzzle.CheckSolutionAsync();
             switch (result)
             {
                 case SolutionState.Correct:
-                    Debug.WriteLine("Correct!");
+                    MessageBox.Show("Everything looks correct!");
                     break;
                 case SolutionState.Incomplete:
-                    Debug.WriteLine("Missing some digits!");
+                    MessageBox.Show("Missing some digits!");
                     break;
                 case SolutionState.Incorrect:
-                    Debug.WriteLine("Something's not quite right.");
+                    MessageBox.Show("Something's not quite right.");
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Save the current locked digits as a new puzzle file
+        /// </summary>
+        private void SavePuzzle()
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog
+            {
+                Filter = "Puzzle file (*.pzl)|*.pzl"
+            };
+            if (saveDialog.ShowDialog() == true)
+            {
+                var puzzleString = Puzzle.CurrentPuzzleToString();
+                File.WriteAllText(saveDialog.FileName, puzzleString);
+            }
+        }
+
+        /// <summary>
+        /// Load a previously saved puzzle file and display it in the puzzle grid
+        /// </summary>
+        private void LoadPuzzle()
+        {
+            OpenFileDialog openDialog = new OpenFileDialog
+            {
+                Filter = "Puzzle file (*.pzl)|*.pzl"
+            };
+
+            if (openDialog.ShowDialog() == true)
+            {
+                var puzzleString = File.ReadAllText(openDialog.FileName);
+
+                // If the puzzle can't be set, notify the user
+                if (!Puzzle.SetPuzzleFromString(puzzleString))
+                {
+                    MessageBox.Show(
+                        "There appears to be an issue with this puzzle file. The puzzle could not be loaded.", 
+                        "Load Puzzle",
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Error);
+                }
+                else
+                {
+                    PuzzleIsLocked = true;
+                }
             }
         }
     }

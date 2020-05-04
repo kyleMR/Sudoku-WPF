@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Sudoku
 {
+    /// <summary>
+    /// Viewmodel governing the display of individual puzzle cells
+    /// </summary>
     public class CellViewModel : BaseViewModel
     {
-
+        // Border width constants
         private const double OuterBorder = 8.0;
         private const double NonetBorder = 5.0;
         private const double CellBorder = 1.5;
+
         private int row;
         private int column;
         private int digit;
@@ -22,6 +23,9 @@ namespace Sudoku
         private HashSet<int> outerPencilMarks;
         private SortedSet<int> centerPencilMarks;
 
+        /// <summary>
+        /// The displayed digit (0-9, 0 represents a blank cell)
+        /// </summary>
         public int Digit
         {
             get => digit;
@@ -32,30 +36,45 @@ namespace Sudoku
             }
         }
 
+        /// <summary>
+        /// Whether this cell is selected/highlighted
+        /// </summary>
         public bool IsHighlighted
         {
             get => isHighlighted;
             set => SetProperty(ref isHighlighted, value);
         }
 
+        /// <summary>
+        /// Whether this cell's digit entry is locked to user input
+        /// </summary>
         public bool IsLockedDigit
         {
             get => isLockedDigit;
             set => SetProperty(ref isLockedDigit, value);
         }
 
+        /// <summary>
+        /// This cell's row number
+        /// </summary>
         public int Row
         {
             get => row;
             set => SetProperty(ref row, value);
         }
 
+        /// <summary>
+        /// This cell's column number
+        /// </summary>
         public int Column
         {
             get => column;
             set => SetProperty(ref column, value);
         }
 
+        /// <summary>
+        /// Defines the left border thickness based on column position
+        /// </summary>
         public double LeftThickness
         {
             get
@@ -75,6 +94,9 @@ namespace Sudoku
             }
         }
 
+        /// <summary>
+        /// Defines the right border thickness based on column position
+        /// </summary>
         public double RightThickness
         {
             get
@@ -94,6 +116,9 @@ namespace Sudoku
             }
         }
 
+        /// <summary>
+        /// Defines the top border thickness based on row position
+        /// </summary>
         public double TopThickness
         {
             get
@@ -113,6 +138,9 @@ namespace Sudoku
             }
         }
 
+        /// <summary>
+        /// Defines the bottom border thickness based on row position
+        /// </summary>
         public double BottomThickness
         {
             get
@@ -131,6 +159,10 @@ namespace Sudoku
                 }
             }
         }
+
+        /// <summary>
+        /// Defines the cell's outer border thickness
+        /// </summary>
         public Thickness BorderThickness
         {
             get
@@ -139,6 +171,7 @@ namespace Sudoku
             }
         }
 
+        // Getters for display status of outer pencil marks
         public bool ShowOuterMark1 => Digit == 0 && outerPencilMarks.Contains(1);
         public bool ShowOuterMark2 => Digit == 0 && outerPencilMarks.Contains(2);
         public bool ShowOuterMark3 => Digit == 0 && outerPencilMarks.Contains(3);
@@ -149,15 +182,29 @@ namespace Sudoku
         public bool ShowOuterMark8 => Digit == 0 && outerPencilMarks.Contains(8);
         public bool ShowOuterMark9 => Digit == 0 && outerPencilMarks.Contains(9);
 
+        /// <summary>
+        /// Center mark display text
+        /// </summary>
         public string CenterMarks => string.Join("", centerPencilMarks);
+
+        /// <summary>
+        /// Whether to display center marks
+        /// </summary>
         public bool CenterMarksVisible => Digit == 0;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public CellViewModel()
         {
             outerPencilMarks = new HashSet<int>();
             centerPencilMarks = new SortedSet<int>();
         }
 
+        /// <summary>
+        /// Toggle the display of the given digit as an outer pencil mark
+        /// </summary>
+        /// <param name="digit">Digit to set or unset</param>
         public void ToggleOuterMark(int digit)
         {
             if (outerPencilMarks.Contains(digit))
@@ -172,6 +219,10 @@ namespace Sudoku
             OnPropertyChanged(propertyName);
         }
 
+        /// <summary>
+        /// Toggle the display of the given digit as a center pencil mark
+        /// </summary>
+        /// <param name="digit">Digit to set or unset</param>
         public void ToggleCenterMark(int digit)
         {
             if (centerPencilMarks.Contains(digit))
@@ -185,6 +236,9 @@ namespace Sudoku
             OnPropertyChanged(nameof(CenterMarks));
         }
 
+        /// <summary>
+        /// Clear all pencil marks on this cell
+        /// </summary>
         public void ClearPencilMarks()
         {
             var markArray = outerPencilMarks.ToArray();
@@ -199,6 +253,9 @@ namespace Sudoku
             OnPropertyChanged(nameof(CenterMarks));
         }
 
+        /// <summary>
+        /// Helper to hide/show display of pencil marks when a digit is set/unset
+        /// </summary>
         private void NotifyMarkDisplayChanged()
         {
             OnPropertyChanged(nameof(ShowOuterMark1));

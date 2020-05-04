@@ -7,6 +7,9 @@ using System.Windows.Input;
 
 namespace Sudoku
 {
+    /// <summary>
+    /// A command that calls an action with no arguments
+    /// </summary>
     public class RelayCommand : ICommand
     {
         private Action execute;
@@ -35,6 +38,10 @@ namespace Sudoku
         }
     }
 
+    /// <summary>
+    /// A command that calls an action with one argument
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class RelayCommand<T> : ICommand
     {
         private Action<T> execute;
