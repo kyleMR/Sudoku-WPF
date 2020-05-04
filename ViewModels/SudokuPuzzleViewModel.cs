@@ -431,11 +431,13 @@ namespace Sudoku
                 {
                     Cells[i].Digit = 0;
                     Cells[i].IsLockedDigit = false;
+                    Cells[i].ClearPencilMarks();
                 }
                 else
                 {
                     Cells[i].Digit = puzzleString[i] - '0';
                     Cells[i].IsLockedDigit = true;
+                    Cells[i].ClearPencilMarks();
                 }
             }
 
